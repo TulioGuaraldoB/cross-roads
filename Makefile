@@ -1,0 +1,23 @@
+run:
+	@echo Running...
+	@go run main.go
+
+install:
+	@echo Downloading dependencies...
+	@go get
+	@echo Validating dependencies...
+	@go mod tidy
+
+vendor:
+	@echo Generating vendor from dependencies...
+	@go mod vendor
+
+test:
+	@echo Running tests...
+	@go test -v ./...
+
+coverage:
+	@echo Running test coverage...
+	@go test -v ./... -coverprofile=cover.out
+	@go tool cover -html=cover.out -o cover.html
+	@echo Coverage test successfully completed.
