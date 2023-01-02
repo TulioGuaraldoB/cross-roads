@@ -9,6 +9,7 @@ import (
 	"github.com/TulioGuaraldoB/cross-roads/core/controllers"
 	"github.com/TulioGuaraldoB/cross-roads/core/handlers"
 	"github.com/TulioGuaraldoB/cross-roads/infra/server/routes"
+	"github.com/TulioGuaraldoB/cross-roads/infra/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,8 +30,10 @@ func (s *Server) Run() {
 	keyCloakClient := gocloak.NewClient(env.Env.KeyCloakBasePath)
 	routerEngine, router := routes.SetRoutes()
 
+	keyCloakService := services.NewKeyCloakService(keyCloakClient)
+
 	// Businesses
-	userBusiness := businesses.NewUserBusinesses(keyCloakClient)
+	userBusiness := businesses.NewUserBusinesses(keyCloakService)
 
 	// Controllers
 	userController := controllers.NewUserController(userBusiness)
