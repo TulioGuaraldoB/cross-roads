@@ -49,3 +49,18 @@ func (mr *MockIUserBusinessMockRecorder) LoginUser(ctx, credentials interface{})
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoginUser", reflect.TypeOf((*MockIUserBusiness)(nil).LoginUser), ctx, credentials)
 }
+
+// RegisterUser mocks base method.
+func (m *MockIUserBusiness) RegisterUser(ctx context.Context, user *requests.UserRequest) (*string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterUser", ctx, user)
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterUser indicates an expected call of RegisterUser.
+func (mr *MockIUserBusinessMockRecorder) RegisterUser(ctx, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockIUserBusiness)(nil).RegisterUser), ctx, user)
+}

@@ -10,6 +10,7 @@ import (
 
 type IUserController interface {
 	Login(ctx *gin.Context)
+	Register(ctx *gin.Context)
 }
 
 type userController struct {
@@ -42,4 +43,28 @@ func (c *userController) Login(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, *token)
+}
+
+func (c *userController) Register(ctx *gin.Context) {
+	userReq := new(requests.UserRequest)
+	if err := ctx.ShouldBindJSON(userReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	_, err := c.userBusiness.RegisterUser(ctx, userReq)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "user inserted successfully!",
+	})
 }

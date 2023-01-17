@@ -9,5 +9,6 @@ func NewUserHandler(router *gin.RouterGroup, userController controllers.IUserCon
 	user := router.Group("user")
 	{
 		user.POST("login", userController.Login)
+		user.POST("register", userController.Register)
 	}
 }

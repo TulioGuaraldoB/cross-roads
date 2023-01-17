@@ -45,3 +45,15 @@ func (mr *MockIUserControllerMockRecorder) Login(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockIUserController)(nil).Login), ctx)
 }
+
+// Register mocks base method.
+func (m *MockIUserController) Register(ctx *gin.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Register", ctx)
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockIUserControllerMockRecorder) Register(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockIUserController)(nil).Register), ctx)
+}

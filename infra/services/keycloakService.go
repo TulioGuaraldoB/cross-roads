@@ -10,6 +10,7 @@ import (
 
 type IKeyCloakService interface {
 	Login(ctx context.Context, credentials *requests.Credentials) (*string, error)
+	CreateUser(ctx context.Context, user *requests.UserRequest) (*string, error)
 }
 
 type keyCloakService struct {
@@ -30,4 +31,30 @@ func (s *keyCloakService) Login(ctx context.Context, credentials *requests.Crede
 	}
 
 	return &token.AccessToken, nil
+}
+
+func (s *keyCloakService) CreateUser(ctx context.Context, user *requests.UserRequest) (*string, error) {
+	keyCloakUser := gocloak.User{
+		FirstName: gocloak.StringP(user.FirstName),
+		LastName:  gocloak.StringP(user.LastName),
+		Email:     gocloak.StringP(user.Email),
+		Username:  gocloak.StringP(user.Username),
+		Credentials: &[]gocloak.CredentialRepresentation{
+			{
+				SecretData: gocloak.StringP(user.Password),
+			},
+		},
+	}
+
+	token, err := s.keyCloakClient.LoginAdmin(ctx, env.Env.KeyCloakAdminUsername, env.Env.KeyCloakAdminUsername, env.Env.KeyCloakRealm)
+	if err != nil {
+		return nil, err
+	}
+
+	creationToken, err := s.keyCloakClient.CreateUser(ctx, token.AccessToken, env.Env.KeyCloakRealm, keyCloakUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return &creationToken, nil
 }

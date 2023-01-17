@@ -35,6 +35,21 @@ func (m *MockIKeyCloakService) EXPECT() *MockIKeyCloakServiceMockRecorder {
 	return m.recorder
 }
 
+// CreateUser mocks base method.
+func (m *MockIKeyCloakService) CreateUser(ctx context.Context, user *requests.UserRequest) (*string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateUser", ctx, user)
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateUser indicates an expected call of CreateUser.
+func (mr *MockIKeyCloakServiceMockRecorder) CreateUser(ctx, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockIKeyCloakService)(nil).CreateUser), ctx, user)
+}
+
 // Login mocks base method.
 func (m *MockIKeyCloakService) Login(ctx context.Context, credentials *requests.Credentials) (*string, error) {
 	m.ctrl.T.Helper()
