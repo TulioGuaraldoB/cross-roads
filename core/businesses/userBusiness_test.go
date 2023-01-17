@@ -17,6 +17,7 @@ type userBusinessTest struct {
 	setMocks            func(*mock.MockIKeyCloakService)
 	expectedContext     context.Context
 	expectedCredentials *requests.Credentials
+	expectedUser        *requests.UserRequest
 }
 
 func TestUserBusinessLogin(t *testing.T) {
@@ -58,6 +59,48 @@ func TestUserBusinessLogin(t *testing.T) {
 
 			assert.Nil(t, err)
 			assert.NotEmpty(t, token)
+		})
+	}
+}
+
+func TestUserBusinessRegister(t *testing.T) {
+	mockContext := context.Background()
+	mockUser := new(requests.UserRequest)
+	faker.Struct(mockUser)
+
+	mockAccessToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
+	tests := []userBusinessTest{
+		{
+			description: "Should return no error",
+			setMocks: func(mikcs *mock.MockIKeyCloakService) {
+				mikcs.EXPECT().
+					CreateUser(mockContext, mockUser).
+					Return(&mockAccessToken, nil)
+			},
+			expectedContext: mockContext,
+			expectedUser:    mockUser,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.description, func(t *testing.T) {
+			// Assert
+			controller := gomock.NewController(t)
+			defer controller.Finish()
+
+			mks := mock.NewMockIKeyCloakService(controller)
+			testCase.setMocks(mks)
+
+			// Act
+			userBusiness := businesses.NewUserBusinesses(mks)
+			_, err := userBusiness.RegisterUser(testCase.expectedContext, testCase.expectedUser)
+			if err != nil { // Assert
+				t.Error(t, err)
+				return
+			}
+
+			assert.Nil(t, err)
 		})
 	}
 }

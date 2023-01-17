@@ -82,6 +82,7 @@ import (
 
 type IUserBusiness interface {
         LoginUser(ctx context.Context, credentials *requests.Credentials) (*string, error)
+        RegisterUser(ctx context.Context, user *requests.UserRequest) (*string, error)
 }
 
 type userBusiness struct {
@@ -94,8 +95,12 @@ func NewUserBusinesses(keyCloakService services.IKeyCloakService) IUserBusiness 
         }
 }</span>
 
-func (s *userBusiness) LoginUser(ctx context.Context, credentials *requests.Credentials) (*string, error) <span class="cov8" title="1">{
-        return s.keyCloakService.Login(ctx, credentials)
+func (b *userBusiness) LoginUser(ctx context.Context, credentials *requests.Credentials) (*string, error) <span class="cov8" title="1">{
+        return b.keyCloakService.Login(ctx, credentials)
+}</span>
+
+func (b *userBusiness) RegisterUser(ctx context.Context, user *requests.UserRequest) (*string, error) <span class="cov8" title="1">{
+        return b.keyCloakService.CreateUser(ctx, user)
 }</span>
 </pre>
 		
@@ -111,6 +116,7 @@ import (
 
 type IUserController interface {
         Login(ctx *gin.Context)
+        Register(ctx *gin.Context)
 }
 
 type userController struct {
@@ -143,6 +149,30 @@ func (c *userController) Login(ctx *gin.Context) <span class="cov8" title="1">{
         }</span>
 
         <span class="cov8" title="1">ctx.JSON(http.StatusOK, *token)</span>
+}
+
+func (c *userController) Register(ctx *gin.Context) <span class="cov8" title="1">{
+        userReq := new(requests.UserRequest)
+        if err := ctx.ShouldBindJSON(userReq); err != nil </span><span class="cov8" title="1">{
+                ctx.JSON(http.StatusBadRequest, gin.H{
+                        "error": err.Error(),
+                })
+
+                return
+        }</span>
+
+        <span class="cov8" title="1">_, err := c.userBusiness.RegisterUser(ctx, userReq)
+        if err != nil </span><span class="cov8" title="1">{
+                ctx.JSON(http.StatusUnauthorized, gin.H{
+                        "error": err.Error(),
+                })
+
+                return
+        }</span>
+
+        <span class="cov8" title="1">ctx.JSON(http.StatusOK, gin.H{
+                "message": "user inserted successfully!",
+        })</span>
 }
 </pre>
 		

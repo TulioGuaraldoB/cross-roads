@@ -43,6 +43,17 @@ func mockCredentials() *requests.Credentials {
 	return mockCredentials
 }
 
+func mockUserRequest() *requests.UserRequest {
+	mockUserRequest := new(requests.UserRequest)
+	mockUserRequest.FirstName = "Frodo"
+	mockUserRequest.LastName = "Baggings"
+	mockUserRequest.Email = "frodo.baggins@hotmail.com"
+	mockUserRequest.Username = "frodo"
+	mockUserRequest.Password = "sword"
+
+	return mockUserRequest
+}
+
 func TestLoginController(t *testing.T) {
 	mockCredentialsJSON, _ := json.Marshal(mockCredentials())
 	mockCredentialsBuffer := bytes.NewBuffer(mockCredentialsJSON)
@@ -132,6 +143,102 @@ func TestLoginUnauthorized(t *testing.T) {
 			// Act
 			userController := controllers.NewUserController(mub)
 			userController.Login(ctx)
+
+			// Assert
+			assert.Equal(t, testCase.expectedStatusCode, recorder.Result().StatusCode)
+		})
+	}
+}
+
+func TestRegisterUnauthorized(t *testing.T) {
+	mockUserRequestJSON, _ := json.Marshal(mockUserRequest())
+	mockCredentialsBuffer := bytes.NewBuffer(mockUserRequestJSON)
+
+	mockContext, mockRecorder := mockGinContext(http.MethodPost, mockCredentialsBuffer)
+
+	tests := []userControllerTest{
+		{
+			description: "Should return StatusCode 401 (Unauthorized)",
+			setMocks: func(mib *mock.MockIUserBusiness) {
+				mib.EXPECT().
+					RegisterUser(mockContext, mockUserRequest()).
+					Return(nil, errors.New("Invalid user credentials"))
+			},
+			expectedGinContext:  mockContext,
+			expectedGinRecorder: mockRecorder,
+			expectedBodyReader:  mockCredentialsBuffer,
+			expectedStatusCode:  http.StatusUnauthorized,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.description, func(t *testing.T) {
+			// Arrange
+			controller := gomock.NewController(t)
+			defer controller.Finish()
+
+			mub := mock.NewMockIUserBusiness(controller)
+			testCase.setMocks(mub)
+
+			ctx := testCase.expectedGinContext
+			recorder := testCase.expectedGinRecorder
+
+			// Act
+			userController := controllers.NewUserController(mub)
+			userController.Register(ctx)
+
+			// Assert
+			assert.Equal(t, testCase.expectedStatusCode, recorder.Result().StatusCode)
+		})
+	}
+}
+
+func TestRegisterController(t *testing.T) {
+	mockUserRequestJSON, _ := json.Marshal(mockUserRequest())
+	mockUserRequestBuffer := bytes.NewBuffer(mockUserRequestJSON)
+
+	mockContext, mockRecorder := mockGinContext(http.MethodPost, mockUserRequestBuffer)
+	mockFailLoginContext, mockFailRecorder := mockGinContext(http.MethodPost, nil)
+	mockToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
+	tests := []userControllerTest{
+		{
+			description: "Should return StatusCode 200 (OK)",
+			setMocks: func(mib *mock.MockIUserBusiness) {
+				mib.
+					EXPECT().RegisterUser(mockContext, mockUserRequest()).
+					Return(&mockToken, nil)
+			},
+			expectedGinContext:  mockContext,
+			expectedGinRecorder: mockRecorder,
+			expectedBodyReader:  mockUserRequestBuffer,
+			expectedStatusCode:  http.StatusOK,
+		},
+		{
+			description:         "Should return StatusCode 400 (Bad Request)",
+			setMocks:            func(mib *mock.MockIUserBusiness) {},
+			expectedGinContext:  mockFailLoginContext,
+			expectedGinRecorder: mockFailRecorder,
+			expectedBodyReader:  nil,
+			expectedStatusCode:  http.StatusBadRequest,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.description, func(t *testing.T) {
+			// Assert
+			controller := gomock.NewController(t)
+			defer controller.Finish()
+
+			mub := mock.NewMockIUserBusiness(controller)
+			testCase.setMocks(mub)
+
+			ctx := testCase.expectedGinContext
+			recorder := testCase.expectedGinRecorder
+
+			// Act
+			userController := controllers.NewUserController(mub)
+			userController.Register(ctx)
 
 			// Assert
 			assert.Equal(t, testCase.expectedStatusCode, recorder.Result().StatusCode)

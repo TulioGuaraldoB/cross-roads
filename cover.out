@@ -1,9 +1,15 @@
 mode: set
-github.com/TulioGuaraldoB/cross-roads/core/businesses/userBusiness.go:18.81,22.2 1 1
-github.com/TulioGuaraldoB/cross-roads/core/businesses/userBusiness.go:24.107,26.2 1 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:19.79,23.2 1 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:25.50,27.60 2 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:35.2,36.16 2 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:44.2,44.33 1 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:27.60,33.3 2 1
-github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:36.16,42.3 2 1
+github.com/TulioGuaraldoB/cross-roads/core/businesses/userBusiness.go:19.81,23.2 1 1
+github.com/TulioGuaraldoB/cross-roads/core/businesses/userBusiness.go:25.107,27.2 1 1
+github.com/TulioGuaraldoB/cross-roads/core/businesses/userBusiness.go:29.103,31.2 1 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:20.79,24.2 1 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:26.50,28.60 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:36.2,37.16 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:45.2,45.33 1 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:28.60,34.3 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:37.16,43.3 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:48.53,50.52 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:58.2,59.16 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:67.2,69.4 1 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:50.52,56.3 2 1
+github.com/TulioGuaraldoB/cross-roads/core/controllers/userController.go:59.16,65.3 2 1
